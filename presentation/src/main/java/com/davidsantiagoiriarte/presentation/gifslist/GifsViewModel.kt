@@ -1,12 +1,11 @@
-package com.davidsantiagoiriarte.giphy.ui.main
+package com.davidsantiagoiriarte.presentation.gifslist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
-class PageViewModel : ViewModel() {
+class GifsViewModel() : ViewModel() {
 
     private val _index = MutableLiveData<Int>()
     val text: LiveData<String> = Transformations.map(_index) {

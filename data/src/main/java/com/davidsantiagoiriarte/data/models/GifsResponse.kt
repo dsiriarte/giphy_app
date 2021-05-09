@@ -1,6 +1,6 @@
 package com.davidsantiagoiriarte.data.models
 
-data class GetGifsResponse(
+data class GifsResponse(
     val `data`: List<Data>,
     val meta: Meta,
     val pagination: Pagination
