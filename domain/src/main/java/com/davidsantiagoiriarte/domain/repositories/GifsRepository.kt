@@ -1,10 +1,10 @@
 package com.davidsantiagoiriarte.domain.repositories
 
+import com.davidsantiagoiriarte.domain.models.Gif
 import com.davidsantiagoiriarte.domain.models.GifsResult
 import kotlinx.coroutines.flow.Flow
 
 interface GifsRepository {
-    suspend fun getTrendingGifs(): Flow<GifsResult>
-    suspend fun searchGifs(searchQuery: String)
-    suspend fun getMoreResults()
+    suspend fun getGifs(searchQuery: String?): Flow<GifsResult>
+    suspend fun removeFavoriteGif(gif: Gif)
 }

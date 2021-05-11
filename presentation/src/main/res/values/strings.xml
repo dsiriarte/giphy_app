@@ -4,4 +4,6 @@
     <string name="app_name">Giphy</string>
     <string name="tab1_name">Gifs</string>
     <string name="tab2_name">Favorites</string>
+    <string name="default_error_message">Unknown error</string>
+    <string name="no_connection_error_message">Please check your internet connection</string>
 </resources>

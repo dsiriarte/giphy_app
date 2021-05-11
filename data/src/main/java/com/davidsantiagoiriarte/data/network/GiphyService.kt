@@ -1,6 +1,6 @@
 package com.davidsantiagoiriarte.data.network
 
-import com.davidsantiagoiriarte.data.models.GifsResponse
+import com.davidsantiagoiriarte.data.network.models.GifsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
