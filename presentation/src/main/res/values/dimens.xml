@@ -10,7 +10,7 @@
     <dimen name="detail_cardview_elevation">16dp</dimen>
     <dimen name="detail_cardview_corner">48dp</dimen>
     <dimen name="thumbnail_detail_size_land">192dp</dimen>
-    <dimen name="list_thumbnail_size">96dp</dimen>
+    <dimen name="list_thumbnail_size">150dp</dimen>
     <dimen name="list_item_title_textsize">14sp</dimen>
     <dimen name="list_item_pirce_textsize">20sp</dimen>
     <dimen name="favorite_icon_size">30dp</dimen>

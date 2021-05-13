@@ -4,6 +4,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.davidsantiagoiriarte.domain.models.Gif
 import com.davidsantiagoiriarte.presentation.R
 import com.davidsantiagoiriarte.presentation.databinding.GifListItemBinding
@@ -19,16 +21,23 @@ class ItemViewHolder(binding: GifListItemBinding) : RecyclerView.ViewHolder(bind
     private val gifImageView: ImageView = binding.ivGif
     private val favoriteIcon: ImageView = binding.ivFavorite
 
-    fun bind(item: Gif, favoriteItemClickListener: FavoriteItemClickListener) {
+    fun bind(item: Gif, favoriteItemClickListener: FavoriteItemClickListener, position: Int) {
         title.text = item.title
-        Glide.with(itemView.context).asGif().load(item.gifUrl).into(gifImageView)
-        if (item.isFavorite) {
+        Glide.with(itemView.context)
+            .load(item.gifUrl)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .into(gifImageView)
+        setFavoriteIcon(item.isFavorite)
+        favoriteIcon.setOnClickListener {
+            favoriteItemClickListener.onFavoriteClicked(item, position)
+        }
+    }
+
+    private fun setFavoriteIcon(isFavorite: Boolean) {
+        if (isFavorite) {
             favoriteIcon.setImageResource(R.drawable.ic_favorite)
         } else {
             favoriteIcon.setImageResource(R.drawable.ic_favorite_border)
-        }
-        favoriteIcon.setOnClickListener {
-            favoriteItemClickListener.onFavoriteClicked(item)
         }
     }
 }

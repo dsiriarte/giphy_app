@@ -4,5 +4,5 @@ data class Gif(
     val id: String,
     val gifUrl: String,
     val title: String,
-    val isFavorite: Boolean = false
+    var isFavorite: Boolean = false
 )

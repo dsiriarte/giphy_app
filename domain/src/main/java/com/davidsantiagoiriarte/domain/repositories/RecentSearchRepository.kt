@@ -1,8 +1,8 @@
 package com.davidsantiagoiriarte.domain.repositories
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 interface RecentSearchRepository {
-    fun getRecentSearch(): LiveData<List<String>>
+    fun getRecentSearch(): Flow<List<String>>
     suspend fun insert(search: String)
 }

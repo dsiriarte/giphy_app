@@ -7,7 +7,7 @@ import com.davidsantiagoiriarte.domain.models.Gif
 fun Data.map(isFavorite: Boolean): Gif {
     return Gif(
         id,
-        embed_url,
+        "https://media.giphy.com/media/$id/giphy.gif",
         title,
         isFavorite
     )

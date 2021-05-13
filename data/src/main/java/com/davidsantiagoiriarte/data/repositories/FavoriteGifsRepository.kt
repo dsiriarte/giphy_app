@@ -17,10 +17,8 @@ class FavoriteGifsRepository(private val favoriteGifsDao: FavoriteGifsDao) :
 
     override suspend fun getGifs(searchQuery: String?): Flow<GifsResult> {
         val query = searchQuery ?: ""
-        return favoriteGifsDao.getFavoriteGifs("%$query%").transform { value ->
-            GifsResult.Success(
-                value.map { it.map() }
-            )
+        return favoriteGifsDao.getFavoriteGifs("%$query%").transform { gifs ->
+            emit(GifsResult.Success(gifs.map { it.map() }, true))
         }
     }
 

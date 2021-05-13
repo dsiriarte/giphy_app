@@ -19,7 +19,7 @@ class ItemRecyclerViewAdapter(private val favoriteItemClickListener: FavoriteIte
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, favoriteItemClickListener)
+        holder.bind(item, favoriteItemClickListener, position)
     }
 
     companion object {

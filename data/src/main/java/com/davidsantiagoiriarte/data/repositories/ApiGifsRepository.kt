@@ -30,14 +30,14 @@ class ApiGifsRepository(
         lastOffset = INITIAL_OFFSET
         inMemoryGifs.clear()
         currentQuery = searchQuery
-        requestData()
+        requestData(true)
         return gifsResults
     }
 
     override suspend fun getMoreResults(searchQuery: String?) {
         if (isRequestInProgress) return
         currentQuery = searchQuery
-        val successful = requestData()
+        val successful = requestData(false)
         if (successful && lastOffset < (totalSearchItems - RESULTS_LIMIT)) {
             lastOffset += RESULTS_LIMIT
         }
@@ -51,7 +51,7 @@ class ApiGifsRepository(
         favoriteGifsDao.deleteFavoriteGif(gif.map())
     }
 
-    private suspend fun requestData(): Boolean {
+    private suspend fun requestData(isFirstTimeCall: Boolean): Boolean {
         isRequestInProgress = true
         var successful = false
 
@@ -73,7 +73,7 @@ class ApiGifsRepository(
                 data.map(isFavorite)
             }
             inMemoryGifs.addAll(items)
-            gifsResults.emit(GifsResult.Success(inMemoryGifs))
+            gifsResults.emit(GifsResult.Success(inMemoryGifs, isFirstTimeCall))
             successful = true
         } catch (exception: IOException) {
             gifsResults.emit(GifsResult.Error(exception))

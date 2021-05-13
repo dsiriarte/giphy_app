@@ -19,7 +19,6 @@ import com.davidsantiagoiriarte.presentation.errors.Error
 import com.davidsantiagoiriarte.presentation.gifslist.adapter.ItemRecyclerViewAdapter
 import com.davidsantiagoiriarte.presentation.util.LANDSCAPE_COLUMN_COUNT
 import com.davidsantiagoiriarte.presentation.util.PORTRAIT_COLUMN_COUNT
-import com.davidsantiagoiriarte.presentation.util.SCREEN_INDEX_ARG
 import com.davidsantiagoiriarte.presentation.util.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,7 +32,7 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
     private var columnCount = PORTRAIT_COLUMN_COUNT
 
     private val gifsViewModel: GifsViewModel by viewModel {
-        parametersOf(SCREEN_INDEX_ARG to requireArguments().getInt(ARG_SECTION_NUMBER))
+        parametersOf(requireArguments().getInt(ARG_SECTION_NUMBER))
     }
 
     private var _binding: FragmentGifsBinding? = null
@@ -41,13 +40,6 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.getInt(ARG_SECTION_NUMBER)?.let {
-
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,7 +76,10 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
             when (result) {
                 is GifsResult.Success -> {
                     (binding.list.adapter as? ItemRecyclerViewAdapter)?.submitList(result.gifs) {
-                        binding.list.scrollToPosition(0)
+                        if (result.isFirstTimeCall) {
+                            binding.list.adapter?.notifyDataSetChanged()
+                            binding.list.scrollToPosition(0)
+                        }
                     }
                 }
                 is GifsResult.Error -> {
@@ -96,10 +91,19 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
         gifsViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.pbLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+
+        gifsViewModel.screenMessages.observe(viewLifecycleOwner) { messageRes ->
+            Snackbar.make(
+                binding.list,
+                messageRes,
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
         gifsViewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
             val message = when (error) {
                 is Error.NoConnectionError -> getString(R.string.no_connection_error_message)
                 is Error.DefaultError -> "${getString(R.string.default_error_message)} ${error.message}"
+                else -> "${getString(R.string.default_error_message)} "
             }
             Snackbar
                 .make(
@@ -110,6 +114,7 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
         }
 
         initSearch()
+        gifsViewModel.searchGifs(null)
     }
 
     private fun initSearch() {
@@ -196,7 +201,10 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
         _binding = null
     }
 
-    override fun onFavoriteClicked(gif: Gif) {
+    override fun onFavoriteClicked(gif: Gif, position: Int) {
         gifsViewModel.favoriteGifClicked(gif)
+        (binding.list.adapter as? ItemRecyclerViewAdapter)?.notifyItemChanged(
+            position,
+            gif.apply { isFavorite = !isFavorite })
     }
 }

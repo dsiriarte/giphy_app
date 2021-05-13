@@ -7,10 +7,12 @@ import com.davidsantiagoiriarte.data.db.daos.RecentSearchDao
 import com.davidsantiagoiriarte.data.network.GiphyService
 import com.davidsantiagoiriarte.data.repositories.ApiGifsRepository
 import com.davidsantiagoiriarte.data.repositories.FavoriteGifsRepository
+import com.davidsantiagoiriarte.data.repositories.RecentSearchRepositoryImpl
 import com.davidsantiagoiriarte.data.util.BASE_URL
 import com.davidsantiagoiriarte.domain.di.NAMED_INJECTOR_API_GIF_REPOSITORY
 import com.davidsantiagoiriarte.domain.di.NAMED_INJECTOR_FAVORITE_GIF_REPOSITORY
 import com.davidsantiagoiriarte.domain.repositories.GifsRepository
+import com.davidsantiagoiriarte.domain.repositories.RecentSearchRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.core.qualifier.named
@@ -28,7 +30,7 @@ val networkModule = module {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    single {
+    single<GiphyService> {
         (get() as Retrofit).create(GiphyService::class.java)
     }
 }
@@ -50,5 +52,8 @@ val repositoriesModule = module {
     }
     single<GifsRepository>(named(NAMED_INJECTOR_FAVORITE_GIF_REPOSITORY)) {
         FavoriteGifsRepository(get())
+    }
+    single<RecentSearchRepository> {
+        RecentSearchRepositoryImpl(get())
     }
 }

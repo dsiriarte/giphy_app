@@ -7,6 +7,7 @@ import com.davidsantiagoiriarte.domain.models.GifsResult
 import com.davidsantiagoiriarte.domain.repositories.GifsRepository
 import com.davidsantiagoiriarte.domain.repositories.PagedGifsRepository
 import com.davidsantiagoiriarte.domain.repositories.RecentSearchRepository
+import com.davidsantiagoiriarte.presentation.R
 import com.davidsantiagoiriarte.presentation.errors.Error
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,10 +19,12 @@ class GifsViewModel(
     private val appLogger: AppLogger
 ) : ViewModel() {
 
-    val errorLiveData = MutableLiveData<Error>()
+    val errorLiveData = MutableLiveData<Error?>()
     val isLoading = MutableLiveData<Boolean>()
 
-    private val queryLiveData = MutableLiveData<String?>()
+    private val queryLiveData: MutableLiveData<String?> = MutableLiveData<String?>()
+
+    val screenMessages = MutableLiveData<Int>()
 
     val itemsResult: LiveData<GifsResult> = queryLiveData.switchMap { queryString ->
         liveData {
@@ -36,10 +39,10 @@ class GifsViewModel(
         }
     }
 
-    val recentSearchLiveData = recentSearchRepository.getRecentSearch()
+    val recentSearchLiveData = recentSearchRepository.getRecentSearch().asLiveData(Dispatchers.Main)
 
-    fun searchGifs(queryString: String) {
-        addRecentSearch(queryString)
+    fun searchGifs(queryString: String?) {
+        queryString?.let { addRecentSearch(it) }
         isLoading.postValue(true)
         queryLiveData.postValue(queryString)
     }
@@ -80,6 +83,7 @@ class GifsViewModel(
         if (gifsRepository is PagedGifsRepository) {
             viewModelScope.launch {
                 gifsRepository.addGifToFavorite(gif)
+                screenMessages.value = R.string.favorite_added
             }
         }
     }
@@ -87,6 +91,7 @@ class GifsViewModel(
     private fun removeGifFromFavorite(gif: Gif) {
         viewModelScope.launch {
             gifsRepository.removeFavoriteGif(gif)
+            screenMessages.value = R.string.favorite_removed
         }
     }
 
