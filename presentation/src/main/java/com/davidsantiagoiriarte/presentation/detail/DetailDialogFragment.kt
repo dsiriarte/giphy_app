@@ -57,6 +57,9 @@ class DetailDialogFragment : DialogFragment() {
             val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share_message))
             startActivity(shareIntent)
         }
+        binding.ivclose.setOnClickListener {
+            dismiss()
+        }
         return binding.root
     }
 

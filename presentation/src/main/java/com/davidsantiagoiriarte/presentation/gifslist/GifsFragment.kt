@@ -154,10 +154,8 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
 
     private fun updateListFromSearchQuery() {
         binding.acSearch.text.trim().let {
-            if (it.isNotEmpty()) {
                 binding.list.scrollToPosition(0)
                 gifsViewModel.searchGifs(it.toString())
-            }
         }
     }
 
