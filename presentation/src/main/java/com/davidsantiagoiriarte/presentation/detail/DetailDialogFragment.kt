@@ -28,7 +28,6 @@ class DetailDialogFragment : DialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +35,10 @@ class DetailDialogFragment : DialogFragment() {
             title = it.getString(ARG_TITLE)
             shareGifLink = it.getString(ARG_SHARE_GIF_LINK)
         }
+    }
+
+    override fun getTheme(): Int {
+        return R.style.DetailDialogTheme
     }
 
     override fun onCreateView(

@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Giphy">
         <activity
-            android:name=".LaunchActivity"
+            android:name=".SplashActivity"
             android:theme="@style/LaunchScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
