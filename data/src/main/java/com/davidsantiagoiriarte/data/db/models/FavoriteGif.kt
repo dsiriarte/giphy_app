@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class FavoriteGif(
     @PrimaryKey val id: String,
     val gifUrl: String,
+    val localGifUrl: String?,
     val title: String
 )

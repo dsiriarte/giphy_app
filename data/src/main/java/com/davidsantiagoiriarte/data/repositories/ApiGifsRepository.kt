@@ -1,6 +1,8 @@
 package com.davidsantiagoiriarte.data.repositories
 
+import android.util.Log
 import com.davidsantiagoiriarte.data.db.daos.FavoriteGifsDao
+import com.davidsantiagoiriarte.data.helpers.DownloadGifHelper
 import com.davidsantiagoiriarte.data.network.GiphyService
 import com.davidsantiagoiriarte.data.util.API_KEY
 import com.davidsantiagoiriarte.data.util.INITIAL_OFFSET
@@ -11,12 +13,14 @@ import com.davidsantiagoiriarte.domain.models.GifsResult
 import com.davidsantiagoiriarte.domain.repositories.PagedGifsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import java.io.IOException
 
 class ApiGifsRepository(
     private val service: GiphyService,
-    private val favoriteGifsDao: FavoriteGifsDao
+    private val favoriteGifsDao: FavoriteGifsDao,
+    private val downloadGifHelper: DownloadGifHelper
 ) : PagedGifsRepository {
 
     private val inMemoryGifs = mutableListOf<Gif>()
@@ -45,6 +49,15 @@ class ApiGifsRepository(
 
     override suspend fun addGifToFavorite(gif: Gif) {
         favoriteGifsDao.insert(gif.map())
+        downloadGifHelper.downloadImage(gif.id, gif.gifUrl) {
+            runBlocking {
+                favoriteGifsDao.update(
+                    gif.apply {
+                        localGifUrl = it
+                    }.map()
+                )
+            }
+        }
     }
 
     override suspend fun removeFavoriteGif(gif: Gif) {
@@ -69,8 +82,8 @@ class ApiGifsRepository(
             totalSearchItems = searchResponse.pagination.total_count
             val favoriteGifs = favoriteGifsDao.getAllFavoriteGifs()
             val items = searchResponse.data.map { data ->
-                val isFavorite = favoriteGifs.firstOrNull { it.id == data.id } != null
-                data.map(isFavorite)
+                val favoriteGif = favoriteGifs.firstOrNull { it.id == data.id }
+                data.map(favoriteGif != null, favoriteGif?.localGifUrl)
             }
             inMemoryGifs.addAll(items)
             gifsResults.emit(GifsResult.Success(inMemoryGifs, isFirstTimeCall))

@@ -10,6 +10,9 @@ interface FavoriteGifsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(favoriteGif: FavoriteGif)
 
+    @Update
+    suspend fun update(favoriteGif: FavoriteGif)
+
     @Query("SELECT * FROM FavoriteGif WHERE title LIKE :search")
     fun getFavoriteGifs(search: String): Flow<List<FavoriteGif>>
 

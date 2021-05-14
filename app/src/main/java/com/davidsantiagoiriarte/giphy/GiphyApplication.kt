@@ -2,6 +2,7 @@ package com.davidsantiagoiriarte.giphy
 
 import android.app.Application
 import com.davidsantiagoiriarte.data.di.dbModule
+import com.davidsantiagoiriarte.data.di.helpersModule
 import com.davidsantiagoiriarte.data.di.networkModule
 import com.davidsantiagoiriarte.data.di.repositoriesModule
 import com.davidsantiagoiriarte.giphy.di.appModule
@@ -15,7 +16,14 @@ class GiphyApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@GiphyApplication)
-            modules(appModule, presentationModule, networkModule, repositoriesModule, dbModule)
+            modules(
+                appModule,
+                presentationModule,
+                networkModule,
+                repositoriesModule,
+                dbModule,
+                helpersModule
+            )
         }
     }
 }

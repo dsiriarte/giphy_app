@@ -1,11 +1,11 @@
 package com.davidsantiagoiriarte.presentation.gifslist.adapter
 
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.davidsantiagoiriarte.domain.models.Gif
 import com.davidsantiagoiriarte.presentation.R
 import com.davidsantiagoiriarte.presentation.databinding.GifListItemBinding
@@ -24,12 +24,15 @@ class ItemViewHolder(binding: GifListItemBinding) : RecyclerView.ViewHolder(bind
     fun bind(item: Gif, favoriteItemClickListener: FavoriteItemClickListener, position: Int) {
         title.text = item.title
         Glide.with(itemView.context)
-            .load(item.gifUrl)
+            .load(item.getRealUrl())
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(gifImageView)
         setFavoriteIcon(item.isFavorite)
         favoriteIcon.setOnClickListener {
             favoriteItemClickListener.onFavoriteClicked(item, position)
+        }
+        gifImageView.setOnClickListener {
+            favoriteItemClickListener.onGifClicked(item)
         }
     }
 

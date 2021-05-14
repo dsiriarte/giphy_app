@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.davidsantiagoiriarte.data.db.GiphyDatabase
 import com.davidsantiagoiriarte.data.db.daos.FavoriteGifsDao
 import com.davidsantiagoiriarte.data.db.daos.RecentSearchDao
+import com.davidsantiagoiriarte.data.helpers.DownloadGifHelper
 import com.davidsantiagoiriarte.data.network.GiphyService
 import com.davidsantiagoiriarte.data.repositories.ApiGifsRepository
 import com.davidsantiagoiriarte.data.repositories.FavoriteGifsRepository
@@ -46,9 +47,13 @@ val dbModule = module {
     single<FavoriteGifsDao> { get<GiphyDatabase>().favoriteGifsDao() }
 }
 
+val helpersModule = module {
+    single { DownloadGifHelper(get()) }
+}
+
 val repositoriesModule = module {
     single<GifsRepository>(named(NAMED_INJECTOR_API_GIF_REPOSITORY)) {
-        ApiGifsRepository(get(), get())
+        ApiGifsRepository(get(), get(), get())
     }
     single<GifsRepository>(named(NAMED_INJECTOR_FAVORITE_GIF_REPOSITORY)) {
         FavoriteGifsRepository(get())

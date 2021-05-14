@@ -8,4 +8,5 @@
     <string name="no_connection_error_message">Please check your internet connection</string>
     <string name="favorite_added">Added to favorites</string>
     <string name="favorite_removed">Removed from favorites</string>
+    <string name="share_message">Share gif</string>
 </resources>

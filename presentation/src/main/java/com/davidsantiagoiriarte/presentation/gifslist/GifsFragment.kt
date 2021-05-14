@@ -15,6 +15,8 @@ import com.davidsantiagoiriarte.domain.models.Gif
 import com.davidsantiagoiriarte.domain.models.GifsResult
 import com.davidsantiagoiriarte.presentation.R
 import com.davidsantiagoiriarte.presentation.databinding.FragmentGifsBinding
+import com.davidsantiagoiriarte.presentation.detail.DETAIL_DIALOG_TAG
+import com.davidsantiagoiriarte.presentation.detail.DetailDialogFragment
 import com.davidsantiagoiriarte.presentation.errors.Error
 import com.davidsantiagoiriarte.presentation.gifslist.adapter.ItemRecyclerViewAdapter
 import com.davidsantiagoiriarte.presentation.util.LANDSCAPE_COLUMN_COUNT
@@ -207,4 +209,10 @@ class GifsFragment : Fragment(), FavoriteItemClickListener {
             position,
             gif.apply { isFavorite = !isFavorite })
     }
+
+    override fun onGifClicked(gif: Gif) {
+        DetailDialogFragment.newInstance(gif.getRealUrl(), gif.gifUrl, gif.title)
+            .show(childFragmentManager, DETAIL_DIALOG_TAG)
+    }
+
 }
